@@ -1,0 +1,2 @@
+# Normalizar finales de línea a LF en el repo, independiente del SO
+* text=auto eol=lf

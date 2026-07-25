@@ -17,6 +17,9 @@ build/
 # Cobertura de tests
 coverage/
 
+# Configuración local de herramientas
+.claude/
+
 # Sistema operativo / editores
 .DS_Store
 Thumbs.db
