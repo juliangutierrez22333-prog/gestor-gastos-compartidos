@@ -17,4 +17,6 @@ export const config = {
   port: Number(process.env.PORT ?? 3001),
   databasePath: process.env.DATABASE_PATH ?? 'data/app.db',
   jwtSecret: required('JWT_SECRET'),
+  // Opcional: ruta al build del cliente para servirlo desde Express (prod).
+  clientDist: process.env.CLIENT_DIST,
 };

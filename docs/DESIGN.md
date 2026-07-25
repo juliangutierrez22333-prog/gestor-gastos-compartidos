@@ -83,6 +83,12 @@ GET    /api/groups/:id/settlements
 
 Autorización transversal (middleware): solo los miembros de un grupo acceden a sus recursos.
 
+Endurecimiento HTTP: `helmet` para headers de seguridad y `express-rate-limit` sobre
+register/login (20 intentos / 15 min por IP) — la superficie de fuerza bruta. `/me` queda
+fuera del límite porque la SPA lo consulta en cada carga. En producción el build del cliente
+se sirve desde el propio Express (`CLIENT_DIST`), con fallback de SPA a `index.html` para las
+rutas que resuelve React Router.
+
 Al crear un gasto se indica exactamente una forma de dividirlo: `splits` (lista explícita de
 `{ userId, amountCents }`, debe sumar el monto) o `splitAmong` (lista de userIds; el servidor
 divide en partes iguales). La regla del redondeo vive en el servidor: los primeros
