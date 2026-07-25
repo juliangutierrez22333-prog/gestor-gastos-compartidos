@@ -57,5 +57,5 @@ npm run build        # compila TypeScript y el bundle del cliente
 - [x] Fase 3 — Gastos con divisiones
 - [x] Fase 4 — Algoritmo de balances y simplificación de deudas
 - [x] Fase 5 — Frontend: auth y grupos
-- [ ] Fase 6 — Frontend: gastos y balances
+- [x] Fase 6 — Frontend: gastos y balances
 - [ ] Fase 7 — Pulido: CI, deploy, documentación final

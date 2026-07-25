@@ -4,6 +4,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { errorMessage } from '../../api/client';
 import * as groupsApi from '../../api/groups';
 import { useAuth } from '../auth/auth-context';
+import { BalancesSection } from '../balances/BalancesSection';
+import { ExpensesSection } from '../expenses/ExpensesSection';
 import type { GroupDetail } from '../../types/api';
 
 export function GroupDetailPage() {
@@ -16,6 +18,9 @@ export function GroupDetailPage() {
   const [memberEmail, setMemberEmail] = useState('');
   const [error, setError] = useState('');
   const [loadError, setLoadError] = useState('');
+  // Al crear/borrar gastos, la sección de balances se remonta (via key)
+  // para recalcular con datos frescos.
+  const [balanceVersion, setBalanceVersion] = useState(0);
 
   // Cadena de promesas en lugar de async/await: el camino síncrono de la
   // función no toca estado, condición que exige react-hooks para efectos.
@@ -69,11 +74,11 @@ export function GroupDetailPage() {
     );
   }
 
-  if (!detail) {
+  if (!detail || !user) {
     return <p className="status-message">Cargando grupo…</p>;
   }
 
-  const soyCreador = user?.id === detail.group.createdBy;
+  const soyCreador = user.id === detail.group.createdBy;
 
   return (
     <section>
@@ -122,7 +127,15 @@ export function GroupDetailPage() {
 
       {error && <p className="error-message">{error}</p>}
 
-      <p className="status-message">Los gastos y balances del grupo llegan en la próxima fase.</p>
+      <ExpensesSection
+        groupId={groupId}
+        members={detail.members}
+        currentUserId={user.id}
+        groupCreatorId={detail.group.createdBy}
+        onChanged={() => setBalanceVersion((v) => v + 1)}
+      />
+
+      <BalancesSection key={balanceVersion} groupId={groupId} currentUserId={user.id} />
     </section>
   );
 }

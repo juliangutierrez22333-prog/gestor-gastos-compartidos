@@ -30,3 +30,43 @@ export interface GroupDetail {
   group: GroupSummary;
   members: GroupMember[];
 }
+
+export interface ExpenseSplit {
+  userId: number;
+  amountCents: number;
+}
+
+export interface Expense {
+  id: number;
+  description: string;
+  amountCents: number;
+  paidBy: number;
+  expenseDate: string;
+  createdAt: string;
+  splits: ExpenseSplit[];
+}
+
+export interface MemberBalance {
+  userId: number;
+  name: string;
+  netCents: number;
+}
+
+export interface SuggestedSettlement {
+  fromUser: number;
+  toUser: number;
+  amountCents: number;
+}
+
+export interface GroupBalances {
+  balances: MemberBalance[];
+  suggestedSettlements: SuggestedSettlement[];
+}
+
+export interface Settlement {
+  id: number;
+  fromUser: number;
+  toUser: number;
+  amountCents: number;
+  createdAt: string;
+}
