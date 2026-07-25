@@ -1,0 +1,24 @@
+# Dependencias
+node_modules/
+
+# Builds
+dist/
+build/
+
+# Base de datos local
+*.db
+*.db-journal
+*.sqlite
+
+# Variables de entorno (nunca commitear secretos)
+.env
+.env.local
+
+# Cobertura de tests
+coverage/
+
+# Sistema operativo / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
