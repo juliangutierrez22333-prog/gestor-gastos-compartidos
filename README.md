@@ -10,7 +10,7 @@ balance neto de cada miembro sugiriendo el mínimo número de pagos para saldar 
 | ------------- | ----------------------------------------------- |
 | Frontend      | React + TypeScript (Vite)                       |
 | Backend       | Node.js + Express + TypeScript                  |
-| Base de datos | SQLite (`better-sqlite3`), migrable a PostgreSQL |
+| Base de datos | SQLite (`node:sqlite`, integrado en Node), migrable a PostgreSQL |
 | Autenticación | JWT + bcrypt                                    |
 
 ## Estructura
@@ -37,7 +37,9 @@ Requiere Node.js >= 20.
 
 ```bash
 npm install
+cp server/.env.example server/.env   # y completar JWT_SECRET
 npm run dev        # levanta la API en http://localhost:3001
+npm run test       # suite de tests (Vitest + supertest)
 npm run lint       # ESLint sobre todos los workspaces
 npm run build      # compila TypeScript
 ```
@@ -45,7 +47,7 @@ npm run build      # compila TypeScript
 ## Estado del proyecto
 
 - [x] Fase 0 — Setup: monorepo, TypeScript estricto, ESLint + Prettier
-- [ ] Fase 1 — Esquema de BD, migraciones y autenticación (JWT + bcrypt)
+- [x] Fase 1 — Esquema de BD, migraciones y autenticación (JWT + bcrypt)
 - [ ] Fase 2 — Grupos y miembros
 - [ ] Fase 3 — Gastos con divisiones
 - [ ] Fase 4 — Algoritmo de balances y simplificación de deudas

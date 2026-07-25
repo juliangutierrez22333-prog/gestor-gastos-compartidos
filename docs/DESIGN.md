@@ -106,5 +106,12 @@ es el estándar práctico y el que usan las apps reales.
 | 7    | Manejo de errores, CI, deploy, README final        |
 
 Decisiones de alcance: se parte con división en partes iguales (el modelo ya soporta montos
-personalizados para una fase futura) y con SQL escrito a mano vía `better-sqlite3` en lugar
-de un ORM, para mantener visibilidad total sobre las consultas.
+personalizados para una fase futura) y con SQL escrito a mano en lugar de un ORM, para
+mantener visibilidad total sobre las consultas.
+
+**Driver de SQLite: `node:sqlite` (módulo integrado de Node >= 22.5).** La opción inicial era
+`better-sqlite3`, pero es un módulo nativo que requiere binarios precompilados o una toolchain
+de compilación (Python + build tools) cuando no hay prebuild para la versión de Node. El módulo
+integrado ofrece la misma API síncrona de statements preparados, elimina la dependencia y
+habilita las foreign keys por defecto. El trade-off: es más reciente y tiene menos ecosistema
+alrededor, pero para este proyecto la superficie usada (prepare/run/get/all/exec) es idéntica.

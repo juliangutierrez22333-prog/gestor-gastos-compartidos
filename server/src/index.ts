@@ -1,7 +1,10 @@
 import { createApp } from './app.js';
+import { config } from './config.js';
+import { createDb } from './db/connection.js';
 
-const PORT = Number(process.env.PORT ?? 3001);
+const db = createDb(config.databasePath);
+const app = createApp({ db, jwtSecret: config.jwtSecret });
 
-createApp().listen(PORT, () => {
-  console.log(`API escuchando en http://localhost:${PORT}`);
+app.listen(config.port, () => {
+  console.log(`API escuchando en http://localhost:${config.port}`);
 });

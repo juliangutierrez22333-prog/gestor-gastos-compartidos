@@ -1,15 +1,38 @@
+import type { DatabaseSync } from 'node:sqlite';
+
 import express from 'express';
 
-// La app se crea en una factory separada del listen() de index.ts:
-// los tests de integración (supertest) necesitan la app sin puerto abierto.
-export function createApp(): express.Express {
-  const app = express();
+import { ApiError } from './errors.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { UserRepository } from './repositories/userRepository.js';
+import { createAuthRouter } from './routes/authRoutes.js';
+import { AuthService } from './services/authService.js';
 
+export interface AppDependencies {
+  db: DatabaseSync;
+  jwtSecret: string;
+}
+
+// La app recibe sus dependencias en lugar de crearlas (inyección de
+// dependencias): los tests le pasan una BD en memoria y un secreto propio,
+// y queda separada del listen() para usarla con supertest sin abrir puertos.
+export function createApp({ db, jwtSecret }: AppDependencies): express.Express {
+  const app = express();
   app.use(express.json());
+
+  const userRepository = new UserRepository(db);
+  const authService = new AuthService(userRepository, jwtSecret);
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
   });
+
+  app.use('/api/auth', createAuthRouter(authService));
+
+  app.use((_req, _res, next) => {
+    next(ApiError.notFound('Ruta no encontrada'));
+  });
+  app.use(errorHandler);
 
   return app;
 }
