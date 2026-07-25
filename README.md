@@ -48,7 +48,7 @@ npm run build      # compila TypeScript
 
 - [x] Fase 0 — Setup: monorepo, TypeScript estricto, ESLint + Prettier
 - [x] Fase 1 — Esquema de BD, migraciones y autenticación (JWT + bcrypt)
-- [ ] Fase 2 — Grupos y miembros
+- [x] Fase 2 — Grupos y miembros
 - [ ] Fase 3 — Gastos con divisiones
 - [ ] Fase 4 — Algoritmo de balances y simplificación de deudas
 - [ ] Fase 5 — Frontend: auth y grupos

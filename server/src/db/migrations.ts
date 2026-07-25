@@ -22,6 +22,29 @@ const migrations: Migration[] = [
       ) STRICT;
     `,
   },
+  {
+    id: 2,
+    name: 'create-groups',
+    up: `
+      CREATE TABLE groups (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        created_by INTEGER NOT NULL REFERENCES users(id),
+        created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+      ) STRICT;
+
+      -- La clave primaria compuesta hace imposible la membresía duplicada.
+      CREATE TABLE group_members (
+        group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        joined_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        PRIMARY KEY (group_id, user_id)
+      ) STRICT;
+
+      -- "Mis grupos" busca por user_id, que no es prefijo de la PK compuesta.
+      CREATE INDEX idx_group_members_user ON group_members(user_id);
+    `,
+  },
 ];
 
 export function runMigrations(db: DatabaseSync): void {

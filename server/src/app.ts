@@ -4,9 +4,12 @@ import express from 'express';
 
 import { ApiError } from './errors.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { GroupRepository } from './repositories/groupRepository.js';
 import { UserRepository } from './repositories/userRepository.js';
 import { createAuthRouter } from './routes/authRoutes.js';
+import { createGroupRouter } from './routes/groupRoutes.js';
 import { AuthService } from './services/authService.js';
+import { GroupService } from './services/groupService.js';
 
 export interface AppDependencies {
   db: DatabaseSync;
@@ -21,13 +24,16 @@ export function createApp({ db, jwtSecret }: AppDependencies): express.Express {
   app.use(express.json());
 
   const userRepository = new UserRepository(db);
+  const groupRepository = new GroupRepository(db);
   const authService = new AuthService(userRepository, jwtSecret);
+  const groupService = new GroupService(groupRepository, userRepository);
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
   });
 
   app.use('/api/auth', createAuthRouter(authService));
+  app.use('/api/groups', createGroupRouter(authService, groupRepository, groupService));
 
   app.use((_req, _res, next) => {
     next(ApiError.notFound('Ruta no encontrada'));
