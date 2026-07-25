@@ -1,9 +1,8 @@
-import type { Request, RequestHandler } from 'express';
+import type { RequestHandler } from 'express';
 import { z } from 'zod';
 
-import { ApiError } from '../errors.js';
 import { authenticatedUserId } from '../middleware/auth.js';
-import { parseIdParam } from '../middleware/groupAccess.js';
+import { groupIdOf, parseIdParam } from '../middleware/groupAccess.js';
 import type { GroupService } from '../services/groupService.js';
 
 export const createGroupSchema = z.object({
@@ -13,14 +12,6 @@ export const createGroupSchema = z.object({
 export const addMemberSchema = z.object({
   email: z.email('Email inválido'),
 });
-
-// El middleware requireGroupMember ya validó y guardó el id del grupo.
-function groupIdOf(req: Request): number {
-  if (req.groupId === undefined) {
-    throw ApiError.notFound('Grupo no encontrado');
-  }
-  return req.groupId;
-}
 
 interface GroupController {
   create: RequestHandler;

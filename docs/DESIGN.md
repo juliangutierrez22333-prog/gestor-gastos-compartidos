@@ -71,7 +71,8 @@ GET    /api/groups/:id
 POST   /api/groups/:id/members         { email }
 DELETE /api/groups/:id/members/:userId
 
-POST   /api/groups/:id/expenses        { description, amountCents, paidBy, splits }
+POST   /api/groups/:id/expenses        { description, amountCents, paidBy, expenseDate?,
+                                          splits | splitAmong }
 GET    /api/groups/:id/expenses
 DELETE /api/groups/:id/expenses/:expenseId
 
@@ -80,6 +81,13 @@ POST   /api/groups/:id/settlements     { toUser, amountCents }
 ```
 
 Autorización transversal (middleware): solo los miembros de un grupo acceden a sus recursos.
+
+Al crear un gasto se indica exactamente una forma de dividirlo: `splits` (lista explícita de
+`{ userId, amountCents }`, debe sumar el monto) o `splitAmong` (lista de userIds; el servidor
+divide en partes iguales). La regla del redondeo vive en el servidor: los primeros
+`monto % n` participantes en orden ascendente de userId absorben un centavo extra, de forma
+determinista. Si la calculara cada cliente, dos clientes podrían repartir distinto el mismo
+gasto.
 
 ## 4. Algoritmo de simplificación de deudas
 

@@ -45,6 +45,32 @@ const migrations: Migration[] = [
       CREATE INDEX idx_group_members_user ON group_members(user_id);
     `,
   },
+  {
+    id: 3,
+    name: 'create-expenses',
+    up: `
+      CREATE TABLE expenses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+        paid_by INTEGER NOT NULL REFERENCES users(id),
+        description TEXT NOT NULL,
+        amount_cents INTEGER NOT NULL CHECK (amount_cents > 0),
+        expense_date TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+      ) STRICT;
+
+      CREATE INDEX idx_expenses_group ON expenses(group_id);
+
+      -- Cuánto le corresponde a cada participante de un gasto. Un monto 0 es
+      -- válido: aparece al repartir montos menores que la cantidad de personas.
+      CREATE TABLE expense_splits (
+        expense_id INTEGER NOT NULL REFERENCES expenses(id) ON DELETE CASCADE,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        amount_cents INTEGER NOT NULL CHECK (amount_cents >= 0),
+        PRIMARY KEY (expense_id, user_id)
+      ) STRICT;
+    `,
+  },
 ];
 
 export function runMigrations(db: DatabaseSync): void {

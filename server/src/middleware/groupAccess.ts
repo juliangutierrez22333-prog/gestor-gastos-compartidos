@@ -1,8 +1,16 @@
-import type { RequestHandler } from 'express';
+import type { Request, RequestHandler } from 'express';
 
 import { ApiError } from '../errors.js';
 import type { GroupRepository } from '../repositories/groupRepository.js';
 import { authenticatedUserId } from './auth.js';
+
+// Para handlers que corren detrás de requireGroupMember.
+export function groupIdOf(req: Request): number {
+  if (req.groupId === undefined) {
+    throw ApiError.notFound('Grupo no encontrado');
+  }
+  return req.groupId;
+}
 
 // Express 5 tipa los params como string | string[] (los comodines capturan
 // arrays); para un :param simple cualquier cosa que no sea un entero es 400.

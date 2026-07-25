@@ -10,12 +10,15 @@ import { requireGroupMember } from '../middleware/groupAccess.js';
 import { validateBody } from '../middleware/validate.js';
 import type { GroupRepository } from '../repositories/groupRepository.js';
 import type { AuthService } from '../services/authService.js';
+import type { ExpenseService } from '../services/expenseService.js';
 import type { GroupService } from '../services/groupService.js';
+import { createExpenseRouter } from './expenseRoutes.js';
 
 export function createGroupRouter(
   auth: AuthService,
   groups: GroupRepository,
   service: GroupService,
+  expenseService: ExpenseService,
 ): Router {
   const router = Router();
   const controller = createGroupController(service);
@@ -35,6 +38,9 @@ export function createGroupRouter(
     controller.addMember,
   );
   router.delete('/:id/members/:userId', requireGroupMember(groups), controller.removeMember);
+
+  // Los gastos viven dentro de un grupo: heredan el chequeo de membresía.
+  router.use('/:id/expenses', requireGroupMember(groups), createExpenseRouter(expenseService));
 
   return router;
 }
