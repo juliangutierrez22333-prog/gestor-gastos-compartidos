@@ -50,7 +50,7 @@ npm run build      # compila TypeScript
 - [x] Fase 1 — Esquema de BD, migraciones y autenticación (JWT + bcrypt)
 - [x] Fase 2 — Grupos y miembros
 - [x] Fase 3 — Gastos con divisiones
-- [ ] Fase 4 — Algoritmo de balances y simplificación de deudas
+- [x] Fase 4 — Algoritmo de balances y simplificación de deudas
 - [ ] Fase 5 — Frontend: auth y grupos
 - [ ] Fase 6 — Frontend: gastos y balances
 - [ ] Fase 7 — Pulido: CI, deploy, documentación final

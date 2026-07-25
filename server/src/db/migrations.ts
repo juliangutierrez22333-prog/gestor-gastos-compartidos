@@ -71,6 +71,25 @@ const migrations: Migration[] = [
       ) STRICT;
     `,
   },
+  {
+    id: 4,
+    name: 'create-settlements',
+    up: `
+      -- Pagos reales entre miembros para saldar deudas. Concepto distinto de
+      -- un gasto compartido: transferencia directa de una persona a otra.
+      CREATE TABLE settlements (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        group_id INTEGER NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+        from_user INTEGER NOT NULL REFERENCES users(id),
+        to_user INTEGER NOT NULL REFERENCES users(id),
+        amount_cents INTEGER NOT NULL CHECK (amount_cents > 0),
+        created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        CHECK (from_user <> to_user)
+      ) STRICT;
+
+      CREATE INDEX idx_settlements_group ON settlements(group_id);
+    `,
+  },
 ];
 
 export function runMigrations(db: DatabaseSync): void {

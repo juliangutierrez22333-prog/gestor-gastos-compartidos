@@ -77,7 +77,8 @@ GET    /api/groups/:id/expenses
 DELETE /api/groups/:id/expenses/:expenseId
 
 GET    /api/groups/:id/balances        → { balances, suggestedSettlements }
-POST   /api/groups/:id/settlements     { toUser, amountCents }
+POST   /api/groups/:id/settlements     { toUser, amountCents }  (fromUser = quien pide)
+GET    /api/groups/:id/settlements
 ```
 
 Autorización transversal (middleware): solo los miembros de un grupo acceden a sus recursos.
@@ -91,7 +92,8 @@ gasto.
 
 ## 4. Algoritmo de simplificación de deudas
 
-1. Calcular el balance neto de cada miembro: `pagado − consumido − pagos_enviados + pagos_recibidos`.
+1. Calcular el balance neto de cada miembro: `pagado − consumido + pagos_enviados − pagos_recibidos`.
+   (Enviar un pago salda deuda propia: sube el balance del emisor y baja el del receptor.)
    La suma de todos los balances es siempre 0.
 2. Algoritmo greedy: emparejar repetidamente al mayor deudor con el mayor acreedor y saldar
    el mínimo de los dos montos.

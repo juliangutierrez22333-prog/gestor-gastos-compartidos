@@ -6,10 +6,12 @@ import { ApiError } from './errors.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { ExpenseRepository } from './repositories/expenseRepository.js';
 import { GroupRepository } from './repositories/groupRepository.js';
+import { SettlementRepository } from './repositories/settlementRepository.js';
 import { UserRepository } from './repositories/userRepository.js';
 import { createAuthRouter } from './routes/authRoutes.js';
 import { createGroupRouter } from './routes/groupRoutes.js';
 import { AuthService } from './services/authService.js';
+import { BalanceService } from './services/balanceService.js';
 import { ExpenseService } from './services/expenseService.js';
 import { GroupService } from './services/groupService.js';
 
@@ -28,9 +30,16 @@ export function createApp({ db, jwtSecret }: AppDependencies): express.Express {
   const userRepository = new UserRepository(db);
   const groupRepository = new GroupRepository(db);
   const expenseRepository = new ExpenseRepository(db);
+  const settlementRepository = new SettlementRepository(db);
   const authService = new AuthService(userRepository, jwtSecret);
   const groupService = new GroupService(groupRepository, userRepository);
   const expenseService = new ExpenseService(expenseRepository, groupRepository);
+  const balanceService = new BalanceService(
+    groupRepository,
+    expenseRepository,
+    settlementRepository,
+    userRepository,
+  );
 
   app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok' });
@@ -39,7 +48,13 @@ export function createApp({ db, jwtSecret }: AppDependencies): express.Express {
   app.use('/api/auth', createAuthRouter(authService));
   app.use(
     '/api/groups',
-    createGroupRouter(authService, groupRepository, groupService, expenseService),
+    createGroupRouter({
+      auth: authService,
+      groups: groupRepository,
+      groupService,
+      expenseService,
+      balanceService,
+    }),
   );
 
   app.use((_req, _res, next) => {
