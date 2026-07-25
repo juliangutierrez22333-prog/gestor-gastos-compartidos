@@ -16,7 +16,11 @@ balance neto de cada miembro sugiriendo el mínimo número de pagos para saldar 
 ## Estructura
 
 ```
-├── client/   # SPA en React (fase 5+)
+├── client/   # SPA en React
+│   └── src/
+│       ├── api/           # Wrapper de fetch y llamadas tipadas a la API
+│       ├── components/    # Componentes compartidos (ProtectedRoute)
+│       └── features/      # Pantallas por dominio: auth, groups
 ├── server/   # API REST en Express
 │   └── src/
 │       ├── routes/        # Definición de endpoints
@@ -38,10 +42,11 @@ Requiere Node.js >= 20.
 ```bash
 npm install
 cp server/.env.example server/.env   # y completar JWT_SECRET
-npm run dev        # levanta la API en http://localhost:3001
-npm run test       # suite de tests (Vitest + supertest)
-npm run lint       # ESLint sobre todos los workspaces
-npm run build      # compila TypeScript
+npm run dev          # API en http://localhost:3001
+npm run dev:client   # frontend en http://localhost:5173 (en otra terminal)
+npm run test         # suite de tests (Vitest + supertest)
+npm run lint         # ESLint sobre todos los workspaces
+npm run build        # compila TypeScript y el bundle del cliente
 ```
 
 ## Estado del proyecto
@@ -51,6 +56,6 @@ npm run build      # compila TypeScript
 - [x] Fase 2 — Grupos y miembros
 - [x] Fase 3 — Gastos con divisiones
 - [x] Fase 4 — Algoritmo de balances y simplificación de deudas
-- [ ] Fase 5 — Frontend: auth y grupos
+- [x] Fase 5 — Frontend: auth y grupos
 - [ ] Fase 6 — Frontend: gastos y balances
 - [ ] Fase 7 — Pulido: CI, deploy, documentación final

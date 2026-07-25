@@ -102,7 +102,30 @@ Garantiza a lo sumo `N − 1` transacciones para `N` miembros. Minimizar el núm
 transacciones es NP-difícil (equivale a particionar en subconjuntos de suma cero); el greedy
 es el estándar práctico y el que usan las apps reales.
 
-## 5. Fases de construcción
+## 5. Frontend
+
+SPA en React + TypeScript (Vite), organizada por dominios (`features/auth`, `features/groups`)
+en lugar de la división técnica `pages/` + `components/`: todo lo relacionado a un dominio
+vive junto.
+
+**Acceso a la API.** Un único wrapper tipado sobre `fetch` (`api/client.ts`) concentra token,
+headers y parseo de errores; ningún componente llama a `fetch` directamente. Sin axios ni
+librerías de estado: para esta escala, contexto de React + hooks es suficiente y muestra los
+fundamentos.
+
+**Dev sin CORS.** El cliente usa URLs relativas (`/api/...`) y el proxy de Vite reenvía al
+backend en el puerto 3001: el navegador ve un solo origen. En producción, el build estático
+puede servirse desde el propio Express con el mismo efecto.
+
+**Token en localStorage — trade-off documentado.** Alternativas: (a) memoria — máxima
+seguridad frente a XSS pero la sesión muere con cada F5; (b) cookie httpOnly — inaccesible
+para JS (mejor contra XSS) pero exige protección CSRF y complica el desarrollo con orígenes
+separados; (c) localStorage — sobrevive recargas y es simple, a costa de que un XSS exitoso
+podría leerlo. Se eligió (c) con mitigaciones: React escapa el contenido por defecto (el
+vector XSS principal está cerrado), el token expira a las 2 horas y no se guarda ningún otro
+dato sensible. En una app bancaria la respuesta sería (b).
+
+## 6. Fases de construcción
 
 | Fase | Alcance                                            |
 | ---- | -------------------------------------------------- |
@@ -118,6 +141,13 @@ es el estándar práctico y el que usan las apps reales.
 Decisiones de alcance: se parte con división en partes iguales (el modelo ya soporta montos
 personalizados para una fase futura) y con SQL escrito a mano en lugar de un ORM, para
 mantener visibilidad total sobre las consultas.
+
+**Advisory aceptado en react-router (GHSA-qwww-vcr4-c8h2).** `npm audit` reporta un CVE alto
+sin versión parcheada a la fecha (2026-07): un bypass CSRF que afecta exclusivamente al modo
+RSC/server actions de React Router. Esta app usa React Router como SPA pura (`BrowserRouter`,
+sin SSR ni server actions), por lo que el vector no existe aquí. La alternativa que propone
+`npm audit fix --force` (bajar a 7.11.0) introduciría 14 advisories reales ya parcheados en
+7.18.1. Decisión: permanecer en 7.18.1 y revisar el advisory al actualizar dependencias.
 
 **Driver de SQLite: `node:sqlite` (módulo integrado de Node >= 22.5).** La opción inicial era
 `better-sqlite3`, pero es un módulo nativo que requiere binarios precompilados o una toolchain

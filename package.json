@@ -4,10 +4,12 @@
   "private": true,
   "description": "Gestor de gastos compartidos: grupos, gastos divididos y cálculo de balances netos minimizando transacciones",
   "workspaces": [
-    "server"
+    "server",
+    "client"
   ],
   "scripts": {
     "dev": "npm run dev --workspace=server",
+    "dev:client": "npm run dev --workspace=client",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
