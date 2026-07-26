@@ -1,5 +1,7 @@
 # Gestor de gastos compartidos
 
+[![CI](https://github.com/juliangutierrez22333-prog/gestor-gastos-compartidos/actions/workflows/ci.yml/badge.svg)](https://github.com/juliangutierrez22333-prog/gestor-gastos-compartidos/actions/workflows/ci.yml)
+
 Aplicación full-stack para gestionar gastos en grupo (estilo Splitwise): los usuarios crean
 grupos, registran gastos indicando quién pagó y entre quiénes se divide, y la app calcula el
 balance neto de cada miembro sugiriendo el mínimo número de pagos para saldar las deudas.
