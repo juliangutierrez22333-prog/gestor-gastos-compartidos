@@ -71,6 +71,9 @@ npm run build        # compila server y client
 
 ## Producción
 
+**Uso local en Windows**: doble click en `iniciar.cmd` — compila si hace falta, levanta todo
+en un proceso y abre el navegador en http://localhost:3001.
+
 Un solo proceso sirve la API y el frontend compilado:
 
 ```bash
